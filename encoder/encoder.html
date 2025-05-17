@@ -2,62 +2,139 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>millis()</title>
+    <title>encoder()</title>
     <!-- CSSテーマ -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
     <!-- 本体 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <script>hljs.highlightAll();</script>
-    <link rel="stylesheet" href="MILLIS.css">
+    <link rel="stylesheet" href="encoder.css">
 </head>
 <body>
-    <h1>millis()</h1>
-    <a href="https://github.com/Ringofuny/swerve_drive/blob/sub/second_swerve/v1.0/lib/millis/millis.h" target="_blank">コード</a>
+    <h1>encoder()</h1>
+    <a href="https://github.com/Ringofuny/swerve_drive/tree/sub/second_swerve/v1.0/lib/my_encoder" target="_blank">コード</a>
+    <h2>ヘッダファイル</h2>
+    <ul>
+        <pre><code class="language-cpp">
+#pragma once
+#include "mbed.h"
 
-<pre><code class="language-cpp">
-#ifndef millis_H
-#define millis_H
-
-#include "mbed.h"  // STM32のモデルに合わせて適宜変更
-
-class MILLIS {
-public:
-    MILLIS() {
-        millis_counter = 0;
-        ms.attach(callback(this, &MILLIS::counter), 1ms);
-    }
-
-    uint32_t millis() {
-        return millis_counter;
-    }
-
-private:
-    volatile uint32_t millis_counter;
-    Ticker ms;
-
-    void counter() {
-        millis_counter++;
-    }
+class menc { // my encoder -> menc
+    public:
+        int enc_count = 0;
+        void A_rise(DigitalIn &inputPin);
+        void B_rise(DigitalIn &inputPin);
+        void A_fall(DigitalIn &inputPin);
+        void B_fall(DigitalIn &inputPin);
 };
+        </code></pre>
+    </ul>
+    <br>
 
-#endif
-</code></pre>
+    <h2>実装</h2>
+    <ul>
+        <pre><code class="language-cpp">
+#include "my_encoder.h"
 
-    <p>
-        MILLISは初期化を行うよ<br>
-        <code>millis_counter = 0;</code><br>
-        これはカウンタの初期化だよ
-    </p>
-    <p>
-        <code>ms.attach(callback(this, &MILLIS::counter), 1ms);</code><br>
-        1msごとに割り込むための設定だよ
-    </p>
-    <p>
-        <code>millis()</code> 関数はカウンタの値を返すよ
-    </p>
-    <p>
-        <code>counter()</code> はカウンタを増やすよ<br>
-        インクリメントしているよ
-    </p>
+void menc::A_rise(DigitalIn &inputPin)
+{
+    if(inputPin == 1){
+        enc_count--;
+    }else{
+        enc_count++;
+    }
+}
+
+void menc::B_rise(DigitalIn &inputPin)
+{
+    if(inputPin == 1){
+        enc_count++;
+    }else{
+        enc_count--;
+    }
+}
+
+void menc::A_fall(DigitalIn &inputPin)
+{
+    if(inputPin == 1){
+        enc_count++;
+    }else{
+        enc_count--;
+    }
+}
+
+void menc::B_fall(DigitalIn &inputPin)
+{
+    if(inputPin == 1){
+        enc_count--;
+    }else{
+        enc_count++;
+    }
+}
+
+        </code></pre>
+        <li>それぞれやっていることはほぼ同じでピンのHIGHとLOWを見てカウンタを増やしているよ</li>
+    </ul>
+    <br>
+    <h2>使う時</h2>
+    <ol>
+        <li>使えるようにインクルード、作成</li>
+        <pre><code class="language-cpp">
+#include "my_encoder.h"
+menc enc;
+        </code></pre>
+        <br>
+        <li>割り込む時に引数は渡せないらしいので別でvoidの関数を用意</li>
+        <pre><code class="language-cpp">
+void counter1_a_rise(){
+    enc.A_rise(enc1_b); // (Pin Name)
+}
+
+void counter1_a_fall(){
+    enc.A_fall(enc1_b); // (Pin Name)
+}
+
+void counter1_b_rise(){
+    enc.B_rise(enc1_a); // (Pin Name)
+}
+
+void counter1_b_fall(){
+    enc.B_fall(enc1_a); // (Pin Name)
+}
+        </code></pre>
+        <br>
+        <li>ピン割り込みの関数を用意</li>
+         <pre><code class="language-cpp">
+void rise_fall() {
+    swi1_a.rise(callback(counter1_a_rise));
+    swi1_a.fall(callback(counter1_a_fall));
+    swi1_b.rise(callback(counter1_b_rise));
+    swi1_b.fall(callback(counter1_b_fall));
+}
+        </code></pre>
+        rise,fallでピンの立ち上がり立ち下がりを読んでいるよ
+        
+        <li>rise_fall()関数を使う</li>
+        <pre><code class="language-cpp">
+int main() {
+    rise_fall();
+    for(;;) {
+        ...
+    }
+}
+        </code></pre>
+        <br>
+        <li>カウンタの値の使い方(エンコーダの値)</li>
+        <pre><code class="language-cpp">
+int main() {
+    rise_fall();
+    for(;;) {
+        printf("%d\n", enc.enc_count);
+    }
+}
+        </code></pre>
+        enc.enc_countの最初のencは最初に作ったmenc enc;のencの部分<br>
+        enc_countは元々用意されている整数型の変数
+    </ol>
 </body>
 </html>
