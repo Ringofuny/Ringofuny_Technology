@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <title>CAN通信</title>
+        <!-- CSSテーマ -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+        <!-- 本体 -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script>
+        <link rel="stylesheet" href="CAN.css">
+    </head>
+    <body>
+        <h1>CAN通信</h1>
+        <h2>概要</h2>
+        <ul>
+            <li>Controller Area Networkの略。</li>
+            <li>1Mbpsが最速</li>
+            <li>主に車載機器の通信に使われるプロトコル</li>
+            <li>高速で確実なデータ共有ができる</li>
+            <li>競合やノイズの影響を受けにくい</li>
+        </ul>
+        
+        <h2>mbedでの書き方</h2>
+        <ul>
+            <li>ピンの設定の仕方</li>
+            <pre>
+                <code class="language-cpp">
+CAN can(PA_11, PA_12);
+// CAN can(RD, TD);
+                </code>
+            </pre>
+            <li>送受信の設定の仕方</li>
+            <pre>
+                <code class="language-cpp">
+CANMessage canMsgsend; // 送信
+CANMessage canMsgReceive; // 受信
+                </code>
+            </pre>
+            これで送受信するデータを格納するオブジェクトを作れる<br>
+            オブジェク → データとその処理がセットになったもの
+            <li>main関数内でやる送受信の設定</li>
+            <pre>
+                <code class="language-cpp">
+can.frequency(1000000);
+can.mode(CAN::Normal);
+canMsgSend.id = 0x200;
+canMsgSend.len = 8; 
+for (int i = 0; i &lt; 8; i++) canMsgSend.data[i] = 0; // 初期化
+                </code>
+            </pre>
+            can.frequencyでcan通信の速度を設定する<br>
+            can.modeでモードを設定する<br>
+            モード
+            <ol>
+                <li>Normal</li>
+                通常の送受信モード
+                <li>Silent</li>
+                受信のみモード
+                <li>LoopBack</li>
+                通信確認用モード
+                <li>SilentLoopBack</li>
+                CANバスに影響を与えずに通信確認するモード
+            </ol>
+            idを決める
+            データ長を決める
+        </ul>
+
+        <h2>送信の仕方</h2>
+        <ul>
+            <pre>
+                <code class="language-cpp">
+for (int i = 0; i &lt; 8; i++) canMsgSend.data[i] = test_data;
+can.write(canMsgSend);
+                </code>
+            </pre>
+        
+            <li>値をセットしてwriteすることでtest_dataというデータを送信することができる!</li>
+        </ul>
+       
+
+        <h2>受信の仕方</h2>
+        <ul>
+            <pre>
+                <code class="language-cpp">
+if (can.read(canMsgReceive)) { 
+    case 0x201: // ID が 0x201の時
+    rcv_1 = canMsgReceive.data[0];
+    break;
+    
+    case 0x202: // ID が 0x202の時
+    rcv_2 = canMsgReceive.data[1];
+    break;
+}
+                </code>
+            </pre>
+            <li>can.read(canMsgReceive)を見ることでデータが来ているかを確認し、case 0x201:でcanのIDが0x201のであるかを確認し、<br>
+                rcv_1に最初のcanデータを代入する。
+            </li>   
+        </ul>
+    </body>
+</html>
