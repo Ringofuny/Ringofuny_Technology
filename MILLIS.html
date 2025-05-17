@@ -1,53 +1,63 @@
 <!DOCTYPE html>
 <html lang="ja">
-    <head>
-        <meta charset="UTF-8">
-        <title>millis()</title>
-        <link rel="stylesheet" href="MILLIS.css">
-    </head>
-    <body>
-        <h1>millis()</h1>
-        <a href="https://github.com/Ringofuny/swerve_drive/blob/sub/second_swerve/v1.0/lib/millis/millis.h" target="_blank">コード</a>
-        <pre><code>
-            #ifndef millis_H
-            #define millis_H
+<head>
+    <meta charset="UTF-8">
+    <title>millis()</title>
+    <!-- CSSテーマ -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+    <!-- 本体 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <link rel="stylesheet" href="MILLIS.css">
+</head>
+<body>
+    <h1>millis()</h1>
+    <a href="https://github.com/Ringofuny/swerve_drive/blob/sub/second_swerve/v1.0/lib/millis/millis.h" target="_blank">コード</a>
 
-            #include "mbed.h"  // STM32のモデルに合わせて適宜変更
+<pre><code class="language-cpp">
+#ifndef millis_H
+#define millis_H
 
-            class MILLIS {
-                public:
-                MILLIS(){
-                    millis_counter = 0;
-                    ms.attach(callback(this, &MILLIS::counter), 1ms);
-                }
+#include "mbed.h"  // STM32のモデルに合わせて適宜変更
 
-                
-                uint32_t millis() {
-                    return millis_counter;
-                }
-                
-                private:
-                    volatile uint32_t millis_counter;
-                    Ticker ms;
-                    // millis()関数（Arduinoと同じ）
-                    void counter() {
-                        millis_counter++;
-                    }
-            };
-
-            #endif
-        </code></pre>
-
-        <h3>MILLISは初期化を行うよ</h3>
+class MILLIS {
+public:
+    MILLIS() {
         millis_counter = 0;
-        これはカウンタの初期化だよ
-
         ms.attach(callback(this, &MILLIS::counter), 1ms);
-        1msごとに割り込むための設定だよ
+    }
 
-        <h3>millis()関数はカウンタの値を返すよ</h3>
-        
-        <h3>counter()はカウンタを増やすよ</h3>
+    uint32_t millis() {
+        return millis_counter;
+    }
+
+private:
+    volatile uint32_t millis_counter;
+    Ticker ms;
+
+    void counter() {
+        millis_counter++;
+    }
+};
+
+#endif
+</code></pre>
+
+    <p>
+        MILLISは初期化を行うよ<br>
+        <code>millis_counter = 0;</code><br>
+        これはカウンタの初期化だよ
+    </p>
+    <p>
+        <code>ms.attach(callback(this, &MILLIS::counter), 1ms);</code><br>
+        1msごとに割り込むための設定だよ
+    </p>
+    <p>
+        <code>millis()</code> 関数はカウンタの値を返すよ
+    </p>
+    <p>
+        <code>counter()</code> はカウンタを増やすよ<br>
         インクリメントしているよ
-    </body>
+    </p>
+</body>
 </html>
