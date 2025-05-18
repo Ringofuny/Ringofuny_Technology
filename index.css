@@ -10,7 +10,7 @@ ol {
     border: 5px solid black;
 }
 
-img {
+.circle-image {
     display: block;
     margin: 0 auto;
     border-radius: 50%;
