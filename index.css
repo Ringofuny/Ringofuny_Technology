@@ -8,6 +8,18 @@ h1 {
 
 ol {
     border: 5px solid black;
+    display: block;         /* ブロック要素に変換 */
+    width: auto;     /* 中身のサイズに縮める */
+    margin: 0 auto;         /* 中央に配置 */
+    text-align: center;
+}
+
+li {
+    display: block;         /* ブロック要素に変換 */
+    width: fit-content;     /* 中身のサイズに縮める */
+    margin: 0 auto;         /* 中央に配置 */
+    text-align: center;
+    text-decoration: none;
 }
 
 .circle-image {
@@ -30,5 +42,19 @@ ol {
 }
 
 .my-X:hover {
+  text-decoration: underline;
+}
+
+
+.hov {
+  display: block;         /* ブロック要素に変換 */
+  width: fit-content;     /* 中身のサイズに縮める */      /* 中央に配置 */
+  text-align: center;
+  color: #005634;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.hov:hover {
   text-decoration: underline;
 }
