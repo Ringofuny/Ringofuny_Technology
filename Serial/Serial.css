@@ -1,0 +1,36 @@
+html {
+    background-color: aquamarine;
+    font-family: "Hiragino Maru Gothic ProN W4";
+}
+
+h1 {
+    text-align: center;
+    font-weight: bold;
+}
+
+
+.bo-ku {
+  display: flex;
+  flex-direction: column;    /* 縦積みに */
+  align-items: center;       /* 中央揃え */
+  border: 5px solid #333;    /* 枠をまとめて外側につける */
+  border-radius: 12px;
+  padding: 30px 50px;        /* 内側の余白 */
+  width: fit-content;        /* 中身に合わせてサイズ調整 */
+  margin: 40px auto;         /* 画面中央に配置 */
+  gap: 20px;                 /* 項目の間の余白 */
+}
+
+.hov {
+    text-decoration: none;
+    color: #005634;
+    font-weight: bold;
+    font-size: 1.5em;
+    transition: background 0.3s;
+    padding: 5px 20px;
+    border-radius: 6px;
+}
+
+.hov:hover {
+  background-color: #42bbab;
+}

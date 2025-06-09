@@ -12,7 +12,7 @@
 </head>
 <body>
     <h1>encoder()</h1>
-    <a href="https://github.com/Ringofuny/swerve_drive/tree/sub/second_swerve/v1.0/lib/my_encoder" target="_blank">コード</a>
+    <a href="https://github.com/Ringofuny/swerve_drive/tree/sub/second_swerve/v1.0/lib/enc" target="_blank">コード</a>
     <h2>ヘッダファイル</h2>
     <ul>
         <pre><code class="language-cpp">
@@ -28,8 +28,8 @@ class ENC {
     void A_fall();
     void B_fall();
     public:
-        ENC(PinName inA, PinName inB, PinName A, PinName B);
-        int enc_count = 0;
+        ENC(PinName A, PinName B);
+        int count = 0;
         void rise_fall();    
 };
         </code></pre>
@@ -41,8 +41,8 @@ class ENC {
         <pre><code class="language-cpp">
 #include "enc.h"
 
-ENC::ENC(PinName inA, PinName inB, PinName A, PinName B)
-    : A_in(inA), B_in(inB), A_dig(A), B_dig(B)  // メンバを初期化子リストで初期化！
+ENC::ENC(PinName A, PinName B)
+    : A_in(A), B_in(B), A_dig(A), B_dig(B)  // メンバを初期化子リストで初期化！
 {
     // 初期化処理があればここに書く
 }
@@ -50,36 +50,36 @@ ENC::ENC(PinName inA, PinName inB, PinName A, PinName B)
 void ENC::A_rise()
 {
     if(A_dig == 1){
-        enc_count--;
+        count--;
     }else{
-        enc_count++;
+        count++;
     }
 }
 
 void ENC::B_rise()
 {
     if(B_dig == 1){
-        enc_count++;
+        count++;
     }else{
-        enc_count--;
+        count--;
     }
 }
 
 void ENC::A_fall()
 {
-    if(A_dig == 1){
-        enc_count++;
+    if(B_dig == 1){
+        count++;
     }else{
-        enc_count--;
+        count--;
     }
 }
 
 void ENC::B_fall()
 {
-    if(B_dig == 1){
-        enc_count--;
+    if(A_dig == 1){
+        count--;
     }else{
-        enc_count++;
+        count++;
     }
 }
 
